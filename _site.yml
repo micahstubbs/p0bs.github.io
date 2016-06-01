@@ -3,8 +3,6 @@ navbar:
   title: "Robin Penfold"
   left:
     - text: "HOME"
-      href: index.html
-    - text: "ABOUT"
       href: about.html
     - text: "BLOG"
       menu:
