@@ -8,13 +8,14 @@ navbar:
       href: about.html
     - text: "BLOG"
       menu:
-        - text: "Live leaderboard"
+        - text: "Best commutes to Reigate"
           href: Commute.html
     - text: "PREMPREDICT"
       menu:
         - text: "Live leaderboard"
           href: https://robin.shinyapps.io/PremPredict/
         - text: "---------"
+        - text: "2015/2016"
         - text: "They think it's all over ..."
           href: 2016PremPredict3.html
         - text: "We've all been foxed by Leicester"
