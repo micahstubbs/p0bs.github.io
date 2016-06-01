@@ -1,15 +1,19 @@
 ---
-title: "Robin Penfold"
+title: " "
 output:
   html_document:
     theme: sandstone
     highlight: pygments
-    code_folding: show
     include:
       after_body: footer.html
 ---
+
+<br></br>
 
 Data science • Investment thoughts • Geeky miscellanea
 
 ---
 
+Add later ...
+
+---
