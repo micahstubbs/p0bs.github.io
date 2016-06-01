@@ -1,0 +1,126 @@
+---
+title: "We've all been foxed by Leicester"
+output:
+  html_document:
+    theme: sandstone
+    highlight: pygments
+    include:
+      after_body: footer.html
+---
+
+The season has been bonkers -- we all know that. But, by way of confirmation, this is the first PremPredict league where everyone's worst team is the same: Leicester City. 
+
+Congratulations therefore go to the tinker man, Kanté, Mahrez and Vardy. But they should also go to Roger Gathercole, who leads the way in our competition. Somehow, Beth and I are currently also in the money.
+
+Here are the standings:
+
+```{r thecode, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE, error=TRUE}
+
+setwd("~/GitHub/p0bs.github.io/")
+
+library(readr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(knitr)
+library(htmlwidgets)
+library(DT)
+library(magrittr)
+
+# Start by running this dimmed code (as PP-thin.R):
+# library(rvest)
+# library(xml2)
+# leagueTable <- read_html("http://www.theguardian.com/football/premierleague/table")
+# clubOrder <- leagueTable %>% 
+#   html_nodes(".table--striped") %>% 
+#   .[[1]] %>% 
+#   html_table()
+# saveRDS(clubOrder, "clubOrder.rds")  # Add date
+# Then move clubOrder.rds to appropriate GitHub drive
+
+clubOrder <- readRDS("clubOrder.rds")  # Add date
+
+# Rename some teams to make the league table consistent with our inputs
+clubOrder$Team[clubOrder$Team=="Leicester"] <- "Leicester City"
+clubOrder$Team[clubOrder$Team=="Spurs"] <- "Tottenham Hotspur"
+clubOrder$Team[clubOrder$Team=="AFC Bournemouth"] <- "Bournemouth"
+clubOrder$Team[clubOrder$Team=="C Palace"] <- "Crystal Palace"
+clubOrder$Team[clubOrder$Team=="Man City"] <- "Manchester City"
+clubOrder$Team[clubOrder$Team=="Man Utd"] <- "Manchester United"
+clubOrder$Team[clubOrder$Team=="West Ham"] <- "West Ham United"
+clubOrder$Team[clubOrder$Team=="Stoke"] <- "Stoke City"
+clubOrder$Team[clubOrder$Team=="Swansea"] <- "Swansea City"
+clubOrder$Team[clubOrder$Team=="West Brom"] <- "West Bromwich Albion"
+clubOrder$Team[clubOrder$Team=="Norwich"] <- "Norwich City"
+clubOrder$Team[clubOrder$Team=="Newcastle"] <- "Newcastle United"
+
+clubsABC <- sort(clubOrder$Team)
+
+dataInput <- read_csv("PP-2015.csv")
+clubStandings <- match(dataInput$Club, clubOrder$Team, 0)
+topClub <- match(1, clubStandings, 0)
+
+predictions <- dataInput[,-1]
+
+bonus <- -50*(predictions[topClub,]==1)
+ssq <- function(x){(x-clubStandings)^2}
+squares <- apply(predictions,2,ssq)
+score <- colSums(squares) + bonus
+names <- colnames(score)
+names1 <- str_replace_all(names, "_", " ")
+worst <- apply(squares,2,max)
+findWorst <- function(y){match(worst[y],squares[,y],0)}
+worstClubNo <- sapply(1:ncol(predictions),findWorst)
+worstClub <- clubsABC[worstClubNo]
+
+output <- rbind(score, bonus, worst, worstClubNo)
+output1 <- data.frame(names1,t(output))
+row.names(output1) <- NULL 
+output2 <- output1 %>% 
+  mutate(worstClub=clubsABC[worstClubNo]) %>%
+  select(-worstClubNo) 
+colnames(output2) <- c("Names", "Scores", "Bonus", "WorstCost", "WorstClub")
+
+report <- output2 %>% 
+  arrange(Scores) %>% 
+  select(Names, Scores, Bonus, WorstClub, WorstCost)
+datatable(report, 
+          rownames = FALSE, 
+          options = list(dom = 't',
+                         pageLength = 23,
+                         order = list(list(1, 'asc'), list(0, 'asc'))))
+```
+
+Remember: if you ever want the latest standings, just check [here](https://robin.shinyapps.io/PremPredict).
+
+I'll be in touch again in a few weeks. Until then, all the best ...
+
+-- Robin
+
+---
+
+PS Here's my code to prove that all is kosher:
+
+```{r thecode, eval=FALSE, echo=TRUE}
+```
+
+And, for completeness, here are your team-by-team predictions and each team's latest position in the league:
+
+```{r thepredictions, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, error=TRUE}
+
+Position <- as.vector(1:20)
+clubsOrder <- clubOrder$Team
+clubsOrder1 <- as.data.frame(cbind(clubsOrder, Position)) %>% 
+  rename(Club = clubsOrder) %>% 
+  left_join(dataInput, by = "Club")
+
+datatable(clubsOrder1,
+          rownames = FALSE,
+          options = list(dom = 't',
+                         pageLength = 20,
+                         order = list(0, 'asc'),
+                         columnDefs = list(list(
+            className = 'dt-right', targets = 1))))
+```
+
+---

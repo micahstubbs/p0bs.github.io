@@ -1,9 +1,29 @@
 name: "http://p0bs.github.io"
 navbar:
-  title: "My Website"
+  title: "Robin Penfold"
   left:
-    - text: "Home"
+    - text: "HOME"
       href: index.html
-    - text: "About"
+    - text: "ABOUT"
       href: about.html
+    - text: "BLOG"
+      menu:
+        - text: "Live leaderboard"
+          href: Commute.html
+    - text: "PREMPREDICT"
+      menu:
+        - text: "Live leaderboard"
+          href: https://robin.shinyapps.io/PremPredict/
+        - text: "---------"
+        - text: "They think it's all over ..."
+          href: 2016PremPredict3.html
+        - text: "We've all been foxed by Leicester"
+          href: 2016PremPredict2.html
+  right:
+    - icon: fa-twitter fa-lg
+      href: https://twitter.com/InvestmentRP
+    - icon: fa-linkedin-square
+      href: https://uk.linkedin.com/in/robinpenfold
+    - icon: fa-envelope
+      href: mailto:robinpenfold@me.com
 output_dir: "."

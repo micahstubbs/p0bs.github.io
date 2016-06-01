@@ -1,6 +1,15 @@
 ---
-title: "My website"
-output: html_document
+title: "Robin Penfold"
+output:
+  html_document:
+    theme: sandstone
+    highlight: pygments
+    code_folding: show
+    include:
+      after_body: footer.html
 ---
 
-Hello, Website!
+Data science • Investment thoughts • Geeky miscellanea
+
+---
+
