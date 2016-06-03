@@ -3,7 +3,7 @@ navbar:
   title: "Robin Penfold"
   left:
     - text: "HOME"
-      href: about.html
+      href: index.html
     - text: "BLOG"
       menu:
         - text: "Best commutes to Reigate"
