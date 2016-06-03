@@ -5,6 +5,7 @@ output:
     theme: sandstone
     highlight: pygments
     fig_width: 7
+    css: styles.css
     include:
       after_body: footer.html
 ---
