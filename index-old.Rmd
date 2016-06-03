@@ -1,0 +1,19 @@
+---
+title: " "
+output:
+  html_document:
+    theme: sandstone
+    highlight: pygments
+    include:
+      after_body: footer.html
+---
+
+<br></br>
+
+Data science • Investment thoughts • Geeky miscellanea
+
+---
+
+Add later ...
+
+---
