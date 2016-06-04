@@ -10,7 +10,7 @@ output:
       after_body: footer.html
 ---
 
-![](main.jpg){ width=100% }
+<img class="bg" src="main.jpg" />
 
 <br></br>
 
