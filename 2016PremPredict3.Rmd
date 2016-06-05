@@ -9,17 +9,17 @@ output:
       after_body: footer.html
 ---
 
-... and it pretty much is. Well done, Roger -- you've topped the table for some time and you're almost sure to do so after the final day.
+... and it pretty much is. Well done, *Roger* -- you've topped the table for some time and you're almost sure to do so after the final day.
 
 Whilst the numbers don't round perfectly, my calculations show that three of us still have some chance of winning. (Of course, others may also have a tiny chance of winning but my calculations don't show it.) 
 
 Pausing to create dramatic tension, I can reveal that:
 
-  * Roger Gathercole has a 97% shot at glory;
+  * Roger Gathercole has about a 97% shot at glory;
   
-  * I have a 3% chance of winning; and
+  * I have about a 3% chance of winning; and
   
-  * Beth has a 1% chance of winning.
+  * Beth has about a 1% chance of winning.
  
 The only downside with the nature of the scores this year, though, is that it's tough to ascribe someone's eventual victory to one particular score on Sunday, as there are so many different permutations.
 
@@ -136,3 +136,147 @@ datatable(clubsOrder1,
 ```
 
 ---
+
+And, for the avoidance of doubt, here are the projections that suggest Roger's likely success:
+
+
+```{r odds, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE, error=TRUE}
+
+library(knitr)
+library(compiler)
+library(data.table)
+
+iterations <- 100000
+
+set.seed(6)
+
+clubOrder %<>% 
+  mutate(fullPts = (1000*Pts) + GD)
+
+clubsABC <- clubOrder %>% 
+  select(Team, fullPts) %>% 
+  arrange(Team)
+
+clubStandings <- match(dataInput$Club, clubOrder$Team, 0)
+
+
+predictions <- dataInput[,-1]
+nPlayers <- ncol(predictions)
+
+ssq <- function(x){sum((x-clubStandings)^2)}
+cssq <- cmpfun(ssq)
+
+score <- as.data.frame(apply(predictions,2,ssq))
+
+names <- as.data.frame(rownames(score))
+names1 <- as.data.frame(str_replace_all(t(names), "_", " "))
+output1 <- cbind(names1, score)
+rownames(output1) <- NULL
+colnames(output1) <- c("Names", "Score")
+
+game <- as.vector(c("CheLei", "EveNor", "MnuBou", "SouCry", "NewTot", "WatSun", "SwaMci", "StoWhu", "WbaLiv", "ArsAst"))
+winSlice <- as.vector(c(0.4335, 0.5128, 0.7162, 0.7162, 0.2187, 0.4428, 0.1798, 0.2778, 0.396, 0.8364))
+drawSlice <- as.vector(c(0.7044, 0.7564, 0.9023, 0.9023, 0.4654, 0.7135, 0.3767, 0.537, 0.6655, 0.9512))
+
+gameOdds <- cbind(game, winSlice, drawSlice)
+
+iteration <- as.data.frame(1:iterations)
+
+vectorRandom <- as.vector(ceiling(runif(10*iterations, min = 0, max = 7)))
+netGameGoals <- matrix(data = vectorRandom, ncol = 10)
+colnames(netGameGoals) <- c("nCheLei", "nEveNor", "nMnuBou", "nSouCry", "nNewTot", "nWatSun", "nSwaMci", "nStoWhu", "nWbaLiv", "nArsAst")
+
+unitVectorRandom <- as.vector(runif(10*iterations, min = 0, max = 1))
+randomGameValues <- matrix(data = unitVectorRandom, ncol = 10)
+colnames(randomGameValues) <- c("rCheLei", "rEveNor", "rMnuBou", "rSouCry", "rNewTot", "rWatSun", "rSwaMci", "rStoWhu", "rWbaLiv", "rArsAst")
+
+simulatedCalcs <- cbind(iteration, randomGameValues, netGameGoals)
+
+# I got lazy with code and know that I should tidy it into a function at some stage
+simulatedCalcs %<>%
+  mutate(Ars=clubsABC$fullPts[clubsABC=="Arsenal"] + 
+           ifelse(rArsAst<gameOdds[10,2], 3000+nArsAst, ifelse(rArsAst<gameOdds[10,3], 1000, -nArsAst))) %>% 
+  mutate(Ast=clubsABC$fullPts[clubsABC=="Aston Villa"] + 
+           ifelse(rArsAst<gameOdds[10,2], -nArsAst, ifelse(rArsAst<gameOdds[10,3], 1000, 3000+nArsAst))) %>% 
+  mutate(Bou=clubsABC$fullPts[clubsABC=="Bournemouth"] + 
+           ifelse(rMnuBou<gameOdds[3,2], -nMnuBou, ifelse(rMnuBou<gameOdds[3,3], 1000, 3000+nMnuBou))) %>% 
+  mutate(Che=clubsABC$fullPts[clubsABC=="Chelsea"] + 
+           ifelse(rCheLei<gameOdds[1,2], 3000+nCheLei, ifelse(rCheLei<gameOdds[1,3], 1000, -nCheLei))) %>% 
+  mutate(Cry=clubsABC$fullPts[clubsABC=="Crystal Palace"] + 
+           ifelse(rSouCry<gameOdds[4,2], -nSouCry, ifelse(rSouCry<gameOdds[4,3], 1000, 3000+nSouCry))) %>% 
+  mutate(Eve=clubsABC$fullPts[clubsABC=="Everton"] + 
+         ifelse(rEveNor<gameOdds[2,2], 3000+nEveNor, ifelse(rEveNor<gameOdds[2,3], 1000, -nEveNor))) %>% 
+  mutate(Lei=clubsABC$fullPts[clubsABC=="Leicester City"] + 
+             ifelse(rCheLei<gameOdds[1,2], -nCheLei, ifelse(rCheLei<gameOdds[1,3], 1000, 3000+nCheLei))) %>% 
+  mutate(Liv=clubsABC$fullPts[clubsABC=="Liverpool"] + 
+             ifelse(rWbaLiv<gameOdds[9,2], -nWbaLiv, ifelse(rWbaLiv<gameOdds[9,3], 1000, 3000+nWbaLiv))) %>% 
+  mutate(Mci=clubsABC$fullPts[clubsABC=="Manchester City"] + 
+             ifelse(rSwaMci<gameOdds[7,2], -nSwaMci, ifelse(rSwaMci<gameOdds[7,3], 1000, 3000+nSwaMci))) %>% 
+  mutate(Mnu=clubsABC$fullPts[clubsABC=="Manchester United"] + 
+             ifelse(rMnuBou<gameOdds[3,2], 3000+nMnuBou, ifelse(rMnuBou<gameOdds[3,3], 1000, -nMnuBou))) %>% 
+  mutate(New=clubsABC$fullPts[clubsABC=="Newcastle United"] + 
+             ifelse(rNewTot<gameOdds[5,2], 3000+nNewTot, ifelse(rNewTot<gameOdds[5,3], 1000, -nNewTot))) %>% 
+  mutate(Nor=clubsABC$fullPts[clubsABC=="Norwich City"] + 
+             ifelse(rEveNor<gameOdds[2,2], -nEveNor, ifelse(rEveNor<gameOdds[2,3], 1000, 3000+nEveNor))) %>% 
+  mutate(Sou=clubsABC$fullPts[clubsABC=="Southampton"] + 
+             ifelse(rSouCry<gameOdds[4,2], 3000+nSouCry, ifelse(rSouCry<gameOdds[4,3], 1000, -nSouCry))) %>% 
+  mutate(Sto=clubsABC$fullPts[clubsABC=="Stoke City"] + 
+             ifelse(rStoWhu<gameOdds[8,2], 3000+nStoWhu, ifelse(rStoWhu<gameOdds[8,3], 1000, -nStoWhu))) %>% 
+  mutate(Sun=clubsABC$fullPts[clubsABC=="Sunderland"] + 
+             ifelse(rWatSun<gameOdds[6,2], -nWatSun, ifelse(rWatSun<gameOdds[6,3], 1000, 3000+nWatSun))) %>% 
+  mutate(Swa=clubsABC$fullPts[clubsABC=="Swansea City"] + 
+             ifelse(rSwaMci<gameOdds[7,2], 3000+nSwaMci, ifelse(rSwaMci<gameOdds[7,3], 1000, -nSwaMci))) %>% 
+  mutate(Tot=clubsABC$fullPts[clubsABC=="Tottenham Hotspur"] + 
+             ifelse(rNewTot<gameOdds[5,2], -nNewTot, ifelse(rNewTot<gameOdds[5,3], 1000, 3000+nNewTot))) %>% 
+  mutate(Wat=clubsABC$fullPts[clubsABC=="Watford"] + 
+             ifelse(rWatSun<gameOdds[6,2], 3000+nWatSun, ifelse(rWatSun<gameOdds[6,3], 1000, -nWatSun))) %>% 
+  mutate(Wba=clubsABC$fullPts[clubsABC=="West Bromwich Albion"] + 
+             ifelse(rWbaLiv<gameOdds[9,2], 3000+nWbaLiv, ifelse(rWbaLiv<gameOdds[9,3], 1000, -nWbaLiv))) %>% 
+  mutate(Whu=clubsABC$fullPts[clubsABC=="West Ham United"] + 
+             ifelse(rStoWhu<gameOdds[8,2], -nStoWhu, ifelse(rStoWhu<gameOdds[8,3], 1000, 3000+nStoWhu)))
+    
+simClubScores <- simulatedCalcs %>% 
+  select(Ars:Whu)
+
+simClubOrderString <- as.integer(apply(-simClubScores, 1, rank, ties.method="average"))
+tsimClubOrder <- matrix(simClubOrderString, nrow = 20)
+simClubOrder <- t(tsimClubOrder)
+
+simClubOrder <- as.data.frame(t(tsimClubOrder))
+
+colnames(simClubOrder) <- c("Arsenal", "Aston Villa", "Bournemouth", "Chelsea", "Crystal Palace", "Everton", "Leicester City", "Liverpool",
+                            "Manchester City", "Manchester United", "Newcastle United", "Norwich City", "Southampton", "Stoke City",
+                            "Sunderland", "Swansea City", "Tottenham Hotspur", "Watford", "West Bromwich Albion", "West Ham United")
+
+
+simPlayerScores <- matrix(rep(0L, nPlayers*iterations), nrow = iterations)
+tPredictions <- t(predictions)
+
+# No need to calculate bonus as nobody chose Leicester (who are already champions)
+
+for (i in 1:nPlayers){
+  mPredictions <- matrix(rep(tPredictions[i,], iterations), nrow = iterations, byrow = TRUE)
+  workingMisses <- (simClubOrder - mPredictions)^2
+  simPlayerScores[,i] <- rowSums(workingMisses)
+}
+
+colnames(simPlayerScores) <- t(names1)
+
+simPlayerRanks <- data.frame(t(apply(simPlayerScores, 1, rank, ties.method='min')))
+winPlayer <- as.data.frame(simPlayerRanks==1L)
+winLikelihood <- as.data.frame(apply(winPlayer, 2, sum))
+setnames(winLikelihood, 1, "Frequency")
+setnames(names1, 1, "Name")
+winSummary <- cbind(names1, winLikelihood)
+
+winSummary %<>% 
+  filter(Frequency > 0) %>% 
+  arrange(-Frequency) %>% 
+  mutate(Likelihood = Frequency/iterations) %>% 
+  select(Name, Likelihood)
+
+kable(winSummary)
+```
+
+---
+

@@ -7,10 +7,9 @@ output:
     fig_width: 7
     css: styles.css
     include:
+      before_body: header.html
       after_body: footer.html
 ---
-
-![](main.jpg){width=100%}
 
 <br></br>
 
@@ -21,6 +20,16 @@ output:
 This site is a window into my interests and work, which often coincide. Most of my remaining time is spent fruitfully with my wife and boy, with friends or with charities … or wasted by supporting sports teams that rarely win.
 
 At work, I use data science to improve how asset owners select asset managers. I also chair the Investment Committee of the Society of Pension Professionals. Before that, I penned research papers on a wide range of investment subjects.
+
+Here are some of my latest posts:
+
+[I need to change the CSS for hyperlink colour!]
+  
+  * Final-week [projections for the winner of my football competition](2016PremPredict3.html)
+  
+  * Cricket
+  
+  * Best commute
 
 “But why p0bs?”, you may ask. Well, it began at school as a spoonerism of my name and got shortened to four letters. I then realised that it was better – and more available as a domain name – with ‘zero BS’!
 
