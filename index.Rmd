@@ -23,7 +23,7 @@ At work, I use data science to improve how asset owners select asset managers. I
 
 Here are some of my latest posts:
   
-  * Final-week [projections for the winner of my football competition](2016PremPredict3.html)
+  * Final-week [projections for the winner of my football competition](2016PremPredict3.html) 
   
   * [Where have the best batsmen batted?](Batting.html)
   
