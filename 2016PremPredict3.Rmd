@@ -9,7 +9,7 @@ output:
       after_body: footer.html
 ---
 
-... and it pretty much is. Well done, *Roger* -- you've topped the table for some time and you're almost sure to do so after the final day.
+... and it pretty much is. Well done, **Roger** -- you've topped the table for some time and you're almost sure to do so after the final day.
 
 Whilst the numbers don't round perfectly, my calculations show that three of us still have some chance of winning. (Of course, others may also have a tiny chance of winning but my calculations don't show it.) 
 
