@@ -11,29 +11,34 @@ output:
       after_body: footer.html
 ---
 
-<br></br>
+<p>&nbsp;</p>
 
-### Data science • Investment thoughts • Geeky miscellanea
-
----
+### Data science • Investment thoughts • Geeky stuff
 
 This site is a window into my interests and work, which often coincide. Most of my remaining time is spent fruitfully with my wife and boy, with friends or with charities … or wasted by supporting sports teams that rarely win.
 
 At work, I use data science to improve how asset owners select asset managers. I also chair the Investment Committee of the Society of Pension Professionals. Before that, I penned research papers on a wide range of investment subjects.
 
----
+<p>&nbsp;</p>
 
-Here are some of my latest posts and tweets:
+#### Latest posts
+
+<p class="half-line">&nbsp;</p>
   
   * Final-week [projections for the winner of my football competition](2016PremPredict3.html) 
   
   * [Where have the best batsmen batted?](Batting.html)
   
   * Where is the [best place to commute to Reigate?](Commute.html)
-<br></br>
+
+<p>&nbsp;</p>
+
+#### Latest tweets
+
+<p class="half-line">&nbsp;</p>
 
 <a class="twitter-timeline" data-dnt="true" href="https://twitter.com/InvestmentRP"
-data-chrome="noheader noborders transparent"
+data-chrome="noheader noborders transparent nofooter"
 height="800"
 data-widget-id="308290928899137536">Tweets by @InvestmentRP</a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
