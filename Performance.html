@@ -9,36 +9,18 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Robin Penfold" />
 
 
 <title>Fixing asset manager evaluation</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/sandstone.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
-<style type="text/css">code{white-space: pre;}</style>
-<link rel="stylesheet"
-      href="site_libs/highlight/default.css"
-      type="text/css" />
-<script src="site_libs/highlight/highlight.js"></script>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
-<script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
-}
-</script>
 
 
 
@@ -69,6 +51,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="styles.css" type="text/css" />
 
 </head>
 
@@ -99,34 +82,34 @@ button.code-folding-btn:focus {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 51px;
+  padding-top: 61px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 
 .section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 .section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 66px;
+  margin-top: -66px;
 }
 </style>
 
@@ -246,27 +229,32 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Fixing asset manager evaluation</h1>
-<h4 class="author"><em>Robin Penfold</em></h4>
-<h4 class="date"><em>8 April 2016</em></h4>
 
 </div>
 
 
 <p>Back in the day, I wrote research papers about investment practice. One example concerned how asset owners could better evaluate the investment performance of their asset managers. As I still like the idea, I thought that I’d share it with you, given that the materials are already in the public domain.</p>
 <p>The idea is pretty simple, which I’ll outline below. If you want the details, check out <a href="http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2101771">the formal paper, via SSRN</a>. For a more accessible introduction, I’d recommend the video below that was taken at the International Congress of Actuaries in 2014.</p>
+<p class="half-line">
+ 
+</p>
 <div id="the-gist-of-the-idea" class="section level2">
 <h2>The gist of the idea</h2>
 <p>In short, a key mantra of investment advisors is that asset owners should ignore the performance of their asset manager. Whether the manager has outperformed for you or not, it is claimed, is irrelevant to how you should expect them to perform in the future. However, a key idea in statistics, called Bayesian thinking, suggests the opposite: that you should use any new information you get about something to update your thinking on it.</p>
 <p>In this work, I therefore used Bayesian thinking to understand the advice that asset owners <strong>should</strong> get. It turns out that this advice makes common sense, particularly when paired with an understanding of whether the asset manager has some longer-term cyclicality in their performance.</p>
 <p>And here’s that video that I mentioned:</p>
+<p class="half-line">
+ 
+</p>
 <iframe width="420" height="315" src="https://www.youtube.com/embed/xutu2axBa0o" frameborder="0">
 </iframe>
-</div>
-<div id="any-comments" class="section level1">
-<h1>Any comments?</h1>
-<p>I’d love to hear from you if you have any thoughts on this idea. If so, either leave me a comment below or contact me via one of the options at the bottom of this page.</p>
+<p class="half-line">
+ 
+</p>
+<hr />
 </div>
 
+<font-size:10>Copyright &copy; 2016 Robin Penfold. Built using Rmarkdown and GitHub pages.</font-size>
 
 
 

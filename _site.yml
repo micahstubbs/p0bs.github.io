@@ -10,6 +10,8 @@ navbar:
           href: Batting.html
         - text: "Best commutes to Reigate"
           href: Commute.html
+        - text: "Fixing asset manager evaluation"
+          href: Performance.html
     - text: "PREMPREDICT"
       menu:
         - text: "Live leaderboard"

@@ -1,20 +1,20 @@
 ---
-layout: post
 title: "Fixing asset manager evaluation"
-author: "Robin Penfold"
-date: "8 April 2016"
-output: html_document
-categories: blog
-tags: [performanceEvaluation, investment]
-share: true
-published: true
-comments: true
+output:
+  html_document:
+    theme: sandstone
+    highlight: pygments
+    fig_width: 7
+    css: styles.css
+    include:
+      after_body: footer.html
 ---
 
 Back in the day, I wrote research papers about investment practice. One example concerned how asset owners could better evaluate the investment performance of their asset managers. As I still like the idea, I thought that I'd share it with you, given that the materials are already in the public domain.
 
 The idea is pretty simple, which I'll outline below. If you want the details, check out [the formal paper, via SSRN](http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2101771). For a more accessible introduction, I'd recommend the video below that was taken at the International Congress of Actuaries in 2014.
 
+<p class="half-line">&nbsp;</p>
 
 ## The gist of the idea
 
@@ -24,9 +24,10 @@ In this work, I therefore used Bayesian thinking to understand the advice that a
 
 And here's that video that I mentioned:
 
+<p class="half-line">&nbsp;</p>
+
 <iframe width="420" height="315" src="https://www.youtube.com/embed/xutu2axBa0o" frameborder="0"> </iframe>
 
+<p class="half-line">&nbsp;</p>
 
-# Any comments?
-
-I'd love to hear from you if you have any thoughts on this idea. If so, either leave me a comment below or contact me via one of the options at the bottom of this page.
+---
