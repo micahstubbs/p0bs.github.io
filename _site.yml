@@ -6,6 +6,8 @@ navbar:
       href: index.html
     - text: "BLOG"
       menu:
+        - text: "Tips from R training"
+          href: packageForThat.html
         - text: "Batting order of best batsmen"
           href: Batting.html
         - text: "Best commutes to Reigate"
