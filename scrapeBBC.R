@@ -1,0 +1,5 @@
+library(rvest)
+html1 <- read_html("http://www.bbc.co.uk/sport/football/tables")
+entries <- html_nodes(html1, "td.goal-difference , td.points , td.team-name")
+length(entries)
+html_text(entries)

@@ -27,6 +27,8 @@ At work, I use data science to improve how asset owners select asset managers. I
 
 <p class="half-line">&nbsp;</p>
   
+  * Referendum data used for an R [training course](packageForThat.html) that I delivered
+
   * Final-week [projections for my football competition](2016PremPredict3.html) 
   
   * [Where in the order have the best batsmen batted?](Batting.html)

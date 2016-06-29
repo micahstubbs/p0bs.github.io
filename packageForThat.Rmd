@@ -1,0 +1,195 @@
+---
+title: "There's an R package for that"
+output:
+  html_document:
+    theme: sandstone
+    highlight: pygments
+    css: styles.css
+    include:
+      after_body: footer.html
+---
+
+Here's a page that I've prepared for an R training course that I'm helping to run at my company.
+
+I'll show a range of tricks made possible by fairly-simple R. This will include web scaping, text analysis and mapping, to name but a few applications.
+
+I'll introduce all this with an example that uses data from the recent referendum.
+
+
+## Web scraping
+
+Let's begin with the packages:
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
+
+library(rmarkdown)        # Generates this html report
+library(knitr)            # Underpins this html report
+library(xml2)             # Scrapes web data
+library(rvest)            # Scrapes web data
+library(tidyr)            # Restructures data
+library(dplyr)            # Provides database functionality
+library(magrittr)         # Enables chaining of commands
+```
+
+Next, the web scraping. Note that I've dimmed-out the code, so that it can be shown on a static webpage. Instead, I have run the code separately and saved the results as an R Dataset. I then just load this dataset on this page:
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
+
+# webResults <- read_html("https://ig.ft.com/sites/elections/2016/uk/eu-referendum/")
+
+# webData <- webResults %>%
+#   html_nodes("td:nth-child(1) , .area-state-3 .hideable") %>%
+#   html_text()
+
+# saveRDS(webData, "webData.rds")
+
+webData <- readRDS("webData.rds")
+
+head(webData)
+```
+
+## Dealing with strings
+
+R can also manipulate strings so that they make sense. In this example, we have some strings that look like numbers but contain a comma. R helps us to remove that comma:
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
+
+lWebData <- length(webData)
+
+areaName <- webData[seq(from = 1, to = lWebData-2, by = 3)]
+remainVotes <- webData[seq(from = 2, to = lWebData-1, by = 3)]
+leaveVotes <- webData[seq(from = 3, to = lWebData, by = 3)]
+
+remainVotes <- gsub(",([0-9])", "\\1", remainVotes)
+leaveVotes <- gsub(",([0-9])", "\\1", leaveVotes)
+
+resultsData <- as.data.frame(t(rbind(areaName, remainVotes, leaveVotes)), stringsAsFactors = F)
+resultsData$remainVotes <- as.numeric(resultsData$remainVotes)
+resultsData$leaveVotes <- as.numeric(resultsData$leaveVotes)
+```
+
+# Map and boundary data
+
+The amount of data and shapefiles on maps is extraordinary. In the UK alone, there are choices aplenty. R helps us to use these maps, so that we can calculate the centre points of each local authority (the areas over which the referendum votes were amalgamated). (To speed-up the code, I've also done as before and run the code in advance, saving the RDS, only to load it for this page.)
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
+
+library(maptools)
+library(ggplot2)
+library(sp)
+
+# localAuthorityRaw <- readShapeSpatial("Local_Authority_District_(GB)_2015_boundaries_(generalised_clipped)/LAD_DEC_2015_GB_BGC.shp", proj4string=CRS("+init=epsg:27700"))
+
+# # Transform the data to use with ggmap
+# localAuthorityClean <- spTransform(localAuthorityRaw, CRS("+init=epsg:4326"))
+
+# # Turns the data into a dataframe
+# localAuthorityCleanDF <- fortify(localAuthorityClean, region = "LAD15NM")
+
+# saveRDS(localAuthorityCleanDF, "localAuthorityCleanDF.rds")
+
+localAuthorityCleanDF <- readRDS("localAuthorityCleanDF.rds")
+```
+
+## Understand mislabelling
+
+Using the dimmed-out code, R can help us to understand the erroneous labels in the data. We can then correct these errors (and drop two areas for analysis).
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
+
+# l1 <- as.data.frame(unique(localAuthorityCleanDF$id), stringsAsFactors = F)
+# colnames(l1)[1] <- "locAuthID"
+# areaNameDF <- as.data.frame(areaName, stringsAsFactors = F)
+# l2 <- l1 %>% 
+#   mutate(check = locAuthID %in% areaNameDF$areaName)
+# l3 <- areaNameDF %>% 
+#   mutate(check = areaName %in% l1$locAuthID)
+# print(l2[l2$check==F,])
+# print(l3[l3$check==F,])
+
+# Based upon these mislabelled regions, alter the names accordingly
+resultsData[24,1] <- "Kingston upon Hull, City of"
+resultsData[109,1] <- "Herefordshire, County of"
+resultsData[134,1] <- "St. Helens"
+resultsData[139,1] <- "County Durham"
+resultsData[270,1] <- "Newcastle upon Tyne"
+resultsData[339,1] <- "Dundee City"
+resultsData[345,1] <- "Aberdeen City"
+resultsData[347,1] <- "Kingston upon Thames"
+resultsData[348,1] <- "Bristol, City of"
+resultsData[360,1] <- "Glasgow City"
+resultsData[366,1] <- "Richmond upon Thames"
+resultsData[374,1] <- "City of Edinburgh"
+
+# Drop NI and Gibraltar
+resultsData <- resultsData[c(-308, -382)]
+```
+
+## Join the data together
+
+We can then use dplyr in R to join the map data to the voting data:
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
+
+finalData <- localAuthorityCleanDF %>%
+  rename(areaName = id) %>% 
+  rename(lng=long) %>% 
+  left_join(resultsData, by = "areaName")
+
+finalData <- finalData[complete.cases(finalData),]
+
+head(finalData)
+```
+
+## Plotting the data interactively
+
+Finally, we can plot the data onto an interactive map:
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
+
+library(leaflet)
+library(htmlwidgets)
+library(ggmap)
+
+mapData <- finalData %>% 
+  select(lng, lat, areaName, remainVotes, leaveVotes, order) %>% 
+  arrange(order)
+
+mapDataLng <- mapData %>% 
+  group_by(areaName) %>% 
+  summarise(avLng = median(lng))
+  
+mapDataLat <- mapData %>% 
+  group_by(areaName) %>% 
+  summarise(avLat = median(lat))
+
+mapDataSummary <- mapData %>% 
+  select(areaName, remainVotes, leaveVotes) %>% 
+  distinct()
+
+mapDataFinal <- mapDataSummary %>% 
+  left_join(mapDataLat, by = "areaName") %>% 
+  left_join(mapDataLng, by = "areaName") %>% 
+  mutate(leaveShare = (leaveVotes/(leaveVotes + remainVotes))) %>% 
+  mutate(size = leaveVotes + remainVotes)
+
+pal <- colorNumeric(palette = "YlOrRd", domain = mapDataFinal$leaveShare)
+
+map <- leaflet(mapDataFinal) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  setView(lng = -3, lat = 53.5, zoom = 6) %>%
+  addCircles(lng = ~mapDataFinal$avLng, 
+             lat = ~mapDataFinal$avLat, 
+             color = ~pal(mapDataFinal$leaveShare), 
+             radius = ~20*sqrt(size), 
+             stroke = FALSE, 
+             fillOpacity = 0.9,
+             popup = paste(mapDataFinal$areaName, "had ", round(100*mapDataFinal$leaveShare, 1), "% voting for Leave and ", mapDataFinal$size, "total voters")) %>% 
+  addLegend("topright", pal = pal,
+            values = ~mapDataFinal$leaveShare,
+            title = "% of Leave voters",
+            labFormat = labelFormat(),
+            opacity = 1)
+
+map
+```
