@@ -9,14 +9,17 @@ output:
       after_body: footer.html
 ---
 
-Here's a page that I've prepared for an R training course that I'm helping to run at my company.
+Here's a page that I've prepared for an R training course that I ran at my company. The idea was to show that just as Apple has an app for that, so too does R (although they're called packages).
 
-I'll show a range of tricks made possible by fairly-simple R. This will include web scaping, text analysis and mapping, to name but a few applications.
+---
 
-I'll introduce all this with an example that uses data from the recent referendum.
+<p>&nbsp;</p>
 
+I'll show a range of tricks made possible by R, including web scaping, text analysis and mapping. And I'll use data from the recent Brexit referendum to keep it topical.
 
-## Web scraping
+<p>&nbsp;</p>
+
+### Loading the packages
 
 Let's begin with the packages:
 
@@ -28,10 +31,19 @@ library(xml2)             # Scrapes web data
 library(rvest)            # Scrapes web data
 library(tidyr)            # Restructures data
 library(dplyr)            # Provides database functionality
+library(htmlwidgets)      # Enables responsive exhibits
+library(DT)               # Enables responsive data tables
+library(leaflet)          # Generates interactive map plots
 library(magrittr)         # Enables chaining of commands
 ```
 
-Next, the web scraping. Note that I've dimmed-out the code, so that it can be shown on a static webpage. Instead, I have run the code separately and saved the results as an R Dataset. I then just load this dataset on this page:
+<p>&nbsp;</p>
+
+### Web scraping
+
+To understand the voting in the Brexit referendum, we need some data about it, which we can scrape from the FT's page on the subject. 
+
+(Note that I've dimmed-out much of this code below, so that I can show it on this static webpage. However, I ran the dimmed-out code separately and saved the ensuing results as an R Dataset. I can then just load this dataset for using in this static webpage.)
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
@@ -44,13 +56,14 @@ Next, the web scraping. Note that I've dimmed-out the code, so that it can be sh
 # saveRDS(webData, "webData.rds")
 
 webData <- readRDS("webData.rds")
-
 head(webData)
 ```
 
-## Dealing with strings
+<p>&nbsp;</p>
 
-R can also manipulate strings so that they make sense. In this example, we have some strings that look like numbers but contain a comma. R helps us to remove that comma:
+### Dealing with strings
+
+That gives us some data, but it is an unhelpful format, as R would read it with a character that has a comma in the middle. Fortunately, R can manipulate strings so that they make sense, such as removing those commas:
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
@@ -68,9 +81,11 @@ resultsData$remainVotes <- as.numeric(resultsData$remainVotes)
 resultsData$leaveVotes <- as.numeric(resultsData$leaveVotes)
 ```
 
-# Map and boundary data
+<p>&nbsp;</p>
 
-The amount of data and shapefiles on maps is extraordinary. In the UK alone, there are choices aplenty. R helps us to use these maps, so that we can calculate the centre points of each local authority (the areas over which the referendum votes were amalgamated). (To speed-up the code, I've also done as before and run the code in advance, saving the RDS, only to load it for this page.)
+### Map and boundary data
+
+To understand this data even more, it would help to map it. And the amount of  boundary files available for UK maps is extraordinary. R helps us to use these maps, so that we can map each local authority (the areas over which the referendum votes were amalgamated). (To speed-up the code, I've also done as before and run the code in advance, saving the RDS, only to load it for this page.)
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
@@ -91,21 +106,31 @@ library(sp)
 localAuthorityCleanDF <- readRDS("localAuthorityCleanDF.rds")
 ```
 
-## Understand mislabelling
+<p>&nbsp;</p>
 
-Using the dimmed-out code, R can help us to understand the erroneous labels in the data. We can then correct these errors (and drop two areas for analysis).
+### Understand any mislabelling
+
+Being real-world data, though, the local authorities that we scraped from the web do not all match those for which we have boundary files. Fortuntately, R can help us to understand the erroneous labels in the data. 
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
-# l1 <- as.data.frame(unique(localAuthorityCleanDF$id), stringsAsFactors = F)
-# colnames(l1)[1] <- "locAuthID"
-# areaNameDF <- as.data.frame(areaName, stringsAsFactors = F)
-# l2 <- l1 %>% 
-#   mutate(check = locAuthID %in% areaNameDF$areaName)
-# l3 <- areaNameDF %>% 
-#   mutate(check = areaName %in% l1$locAuthID)
-# print(l2[l2$check==F,])
-# print(l3[l3$check==F,])
+l1 <- as.data.frame(unique(localAuthorityCleanDF$id), stringsAsFactors = F)
+colnames(l1)[1] <- "locAuthID"
+areaNameDF <- as.data.frame(areaName, stringsAsFactors = F)
+
+l2 <- l1 %>%
+  mutate(check = locAuthID %in% areaNameDF$areaName)
+
+l3 <- areaNameDF %>%
+  mutate(check = areaName %in% l1$locAuthID)
+
+print(l2[l2$check==F,])
+print(l3[l3$check==F,])
+```
+
+Given these erroneous labels, we can then correct these errors (and drop two areas from our analysis).
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
 # Based upon these mislabelled regions, alter the names accordingly
 resultsData[24,1] <- "Kingston upon Hull, City of"
@@ -122,56 +147,61 @@ resultsData[366,1] <- "Richmond upon Thames"
 resultsData[374,1] <- "City of Edinburgh"
 
 # Drop NI and Gibraltar
-resultsData <- resultsData[c(-308, -382)]
+mapDataSummary <- resultsData[c(-308, -382)]
 ```
 
-## Join the data together
+<p>&nbsp;</p>
 
-We can then use dplyr in R to join the map data to the voting data:
+### Calculate the centrepoint of the local authority
+
+We could use the polygon details that we have in our data to map the data. However, circles on a map would enable us to alter the size of the circle and therefore show more detail about the data. As such, we'll use R to calculate the centre points of each local authority.
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
-finalData <- localAuthorityCleanDF %>%
-  rename(areaName = id) %>% 
-  rename(lng=long) %>% 
-  left_join(resultsData, by = "areaName")
-
-finalData <- finalData[complete.cases(finalData),]
-
-head(finalData)
-```
-
-## Plotting the data interactively
-
-Finally, we can plot the data onto an interactive map:
-
-```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
-
-library(leaflet)
-library(htmlwidgets)
-library(ggmap)
-
-mapData <- finalData %>% 
-  select(lng, lat, areaName, remainVotes, leaveVotes, order) %>% 
-  arrange(order)
-
-mapDataLng <- mapData %>% 
-  group_by(areaName) %>% 
-  summarise(avLng = median(lng))
+mapDataLng <- localAuthorityCleanDF %>% 
+  group_by(id) %>% 
+  summarise(avLng = round(median(long),4))
   
-mapDataLat <- mapData %>% 
-  group_by(areaName) %>% 
-  summarise(avLat = median(lat))
+mapDataLat <- localAuthorityCleanDF %>% 
+  group_by(id) %>% 
+  summarise(avLat = round(median(lat),4))
 
-mapDataSummary <- mapData %>% 
-  select(areaName, remainVotes, leaveVotes) %>% 
-  distinct()
+mapDataLngLat <- mapDataLat %>% 
+  left_join(mapDataLng, by = "id") %>% 
+  rename(areaName = id)
+```
+
+<p>&nbsp;</p>
+
+### Join and amend the data
+
+We can then join the map data to the voting data and determine the proportion of leave votes, along with the total number of votes cast in each Local Authority. The following interactive table provides the details.
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
 mapDataFinal <- mapDataSummary %>% 
-  left_join(mapDataLat, by = "areaName") %>% 
-  left_join(mapDataLng, by = "areaName") %>% 
-  mutate(leaveShare = (leaveVotes/(leaveVotes + remainVotes))) %>% 
+  left_join(mapDataLngLat, by = "areaName") %>% 
+  mutate(leaveShare = round(leaveVotes/(leaveVotes + remainVotes),2)) %>% 
   mutate(size = leaveVotes + remainVotes)
+
+mapDataFinal <- mapDataFinal[complete.cases(mapDataFinal),]
+
+datatable(mapDataFinal,
+          rownames = FALSE,
+          options = list(dom = 'tip',
+                         order = list(5, 'desc'),
+                         columnDefs = list(list(
+            className = 'dt-left', targets = 0)),
+                         pageLength = 10))
+```
+
+<p>&nbsp;</p>
+
+### Plotting the votes
+
+We're then ready to plot the data. When we do so, some regional trends are immediately apparent.
+
+```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
 pal <- colorNumeric(palette = "YlOrRd", domain = mapDataFinal$leaveShare)
 
@@ -193,5 +223,11 @@ map <- leaflet(mapDataFinal) %>%
 
 map
 ```
+
+<p>&nbsp;</p>
+
+### There's a package for that
+
+And that's it! Hopefully, this has given you a quick appreciation of what R can help you to achieve fairly quickly.
 
 ---
