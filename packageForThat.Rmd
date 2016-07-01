@@ -43,7 +43,7 @@ library(magrittr)         # Enables chaining of commands
 
 To understand the voting in the Brexit referendum, we need some data about it, which we can scrape from the FT's page on the subject. 
 
-(Note that I've dimmed-out much of this code below, so that I can show it on this static webpage. However, I ran the dimmed-out code separately and saved the ensuing results as an R Dataset. I can then just load this dataset for using in this static webpage.)
+(Note that I've dimmed-out much of this code below, so that I can show it on this static webpage. However, I ran the dimmed-out code separately and saved the ensuing results as an R Dataset. I can then just load this dataset for use on this static webpage.)
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
@@ -110,7 +110,7 @@ localAuthorityCleanDF <- readRDS("localAuthorityCleanDF.rds")
 
 ### Understand any mislabelling
 
-Being real-world data, though, the local authorities that we scraped from the web do not all match those for which we have boundary files. Fortuntately, R can help us to understand the erroneous labels in the data. 
+Being real-world data, though, the Local Authorities that we scraped from the web do not all match those for which we have boundary files. Fortuntately, R can help us to understand the erroneous labels in the data. 
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
@@ -154,7 +154,7 @@ mapDataSummary <- resultsData[c(-308, -382)]
 
 ### Calculate the centrepoint of the local authority
 
-We could use the polygon details that we have in our data to map the data. However, circles on a map would enable us to alter the size of the circle and therefore show more detail about the data. As such, we'll use R to calculate the centre points of each local authority.
+We could use the polygon details that we have to map our data. However, circles on a map would enable us to alter the size of the circle and therefore show the data in more detail. As such, we'll use R to calculate the centrepoints of each Local Authority.
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
@@ -199,7 +199,7 @@ datatable(mapDataFinal,
 
 ### Plotting the votes
 
-We're now ready to plot the data. When we do so, some regional trends are immediately apparent.
+We're now ready to plot the data. When we do so, some regional trends become immediately apparent.
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
@@ -228,7 +228,7 @@ map
 
 ### There's a package for that
 
-And that's it! Hopefully, this has given you a quick appreciation of the variety of techniques that you can employ in R.
+And that's it! Hopefully, this page has given you a quick appreciation of the variety of techniques that you can fruitfully employ in R.
 
 <p>&nbsp;</p>
 

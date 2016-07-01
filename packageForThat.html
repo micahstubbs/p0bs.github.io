@@ -326,7 +326,7 @@ $(document).ready(function () {
 <div id="web-scraping" class="section level3">
 <h3>Web scraping</h3>
 <p>To understand the voting in the Brexit referendum, we need some data about it, which we can scrape from the FT’s page on the subject.</p>
-<p>(Note that I’ve dimmed-out much of this code below, so that I can show it on this static webpage. However, I ran the dimmed-out code separately and saved the ensuing results as an R Dataset. I can then just load this dataset for using in this static webpage.)</p>
+<p>(Note that I’ve dimmed-out much of this code below, so that I can show it on this static webpage. However, I ran the dimmed-out code separately and saved the ensuing results as an R Dataset. I can then just load this dataset for use on this static webpage.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># webResults &lt;- read_html(&quot;https://ig.ft.com/sites/elections/2016/uk/eu-referendum/&quot;)</span>
 
 <span class="co"># webData &lt;- webResults %&gt;%</span>
@@ -386,7 +386,7 @@ localAuthorityCleanDF &lt;-<span class="st"> </span><span class="kw">readRDS</sp
 </div>
 <div id="understand-any-mislabelling" class="section level3">
 <h3>Understand any mislabelling</h3>
-<p>Being real-world data, though, the local authorities that we scraped from the web do not all match those for which we have boundary files. Fortuntately, R can help us to understand the erroneous labels in the data.</p>
+<p>Being real-world data, though, the Local Authorities that we scraped from the web do not all match those for which we have boundary files. Fortuntately, R can help us to understand the erroneous labels in the data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">l1 &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">unique</span>(localAuthorityCleanDF$id), <span class="dt">stringsAsFactors =</span> F)
 <span class="kw">colnames</span>(l1)[<span class="dv">1</span>] &lt;-<span class="st"> &quot;locAuthID&quot;</span>
 areaNameDF &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(areaName, <span class="dt">stringsAsFactors =</span> F)
@@ -450,7 +450,7 @@ mapDataSummary &lt;-<span class="st"> </span>resultsData[<span class="kw">c</spa
 </div>
 <div id="calculate-the-centrepoint-of-the-local-authority" class="section level3">
 <h3>Calculate the centrepoint of the local authority</h3>
-<p>We could use the polygon details that we have in our data to map the data. However, circles on a map would enable us to alter the size of the circle and therefore show more detail about the data. As such, we’ll use R to calculate the centre points of each local authority.</p>
+<p>We could use the polygon details that we have to map our data. However, circles on a map would enable us to alter the size of the circle and therefore show the data in more detail. As such, we’ll use R to calculate the centrepoints of each Local Authority.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mapDataLng &lt;-<span class="st"> </span>localAuthorityCleanDF %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">group_by</span>(id) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">summarise</span>(<span class="dt">avLng =</span> <span class="kw">round</span>(<span class="kw">median</span>(long),<span class="dv">4</span>))
@@ -491,7 +491,7 @@ mapDataFinal &lt;-<span class="st"> </span>mapDataFinal[<span class="kw">complet
 </div>
 <div id="plotting-the-votes" class="section level3">
 <h3>Plotting the votes</h3>
-<p>We’re now ready to plot the data. When we do so, some regional trends are immediately apparent.</p>
+<p>We’re now ready to plot the data. When we do so, some regional trends become immediately apparent.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pal &lt;-<span class="st"> </span><span class="kw">colorNumeric</span>(<span class="dt">palette =</span> <span class="st">&quot;YlOrRd&quot;</span>, <span class="dt">domain =</span> mapDataFinal$leaveShare)
 
 map &lt;-<span class="st"> </span><span class="kw">leaflet</span>(mapDataFinal) %&gt;%
@@ -519,7 +519,7 @@ map</code></pre></div>
 </div>
 <div id="theres-a-package-for-that" class="section level3">
 <h3>There’s a package for that</h3>
-<p>And that’s it! Hopefully, this has given you a quick appreciation of the variety of techniques that you can employ in R.</p>
+<p>And that’s it! Hopefully, this page has given you a quick appreciation of the variety of techniques that you can fruitfully employ in R.</p>
 <p>
  
 </p>
