@@ -295,8 +295,10 @@ $(document).ready(function () {
 </div>
 
 
-<p>Here’s a page that I’ve prepared for an R training course that I ran at my company. The idea was to show that just as Apple has an app for that, so too does R (although they’re called packages).</p>
-<hr />
+<p>
+ 
+</p>
+<p>Here’s a page that I prepared for an R training course that I ran at my company. The idea was to show that, just like Apple, R has an app for that. OK, a package for that.</p>
 <p>
  
 </p>
@@ -362,7 +364,7 @@ resultsData$leaveVotes &lt;-<span class="st"> </span><span class="kw">as.numeric
 </div>
 <div id="map-and-boundary-data" class="section level3">
 <h3>Map and boundary data</h3>
-<p>To understand this data even more, it would help to map it. And the amount of boundary files available for UK maps is extraordinary. R helps us to use these maps, so that we can map each local authority (the areas over which the referendum votes were amalgamated). (To speed-up the code, I’ve also done as before and run the code in advance, saving the RDS, only to load it for this page.)</p>
+<p>To understand this data even more, it would help to map it. And the amount of boundary files available for UK maps is extraordinary. R helps us to use these maps, so that we can map each local authority (the areas over which the referendum votes were amalgamated). (As before, I’ve run the dimmed-out code beforehand and saved the RDS, for use on this page.)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(maptools)
 <span class="kw">library</span>(ggplot2)
 <span class="kw">library</span>(sp)
@@ -489,7 +491,7 @@ mapDataFinal &lt;-<span class="st"> </span>mapDataFinal[<span class="kw">complet
 </div>
 <div id="plotting-the-votes" class="section level3">
 <h3>Plotting the votes</h3>
-<p>We’re then ready to plot the data. When we do so, some regional trends are immediately apparent.</p>
+<p>We’re now ready to plot the data. When we do so, some regional trends are immediately apparent.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pal &lt;-<span class="st"> </span><span class="kw">colorNumeric</span>(<span class="dt">palette =</span> <span class="st">&quot;YlOrRd&quot;</span>, <span class="dt">domain =</span> mapDataFinal$leaveShare)
 
 map &lt;-<span class="st"> </span><span class="kw">leaflet</span>(mapDataFinal) %&gt;%
@@ -517,7 +519,10 @@ map</code></pre></div>
 </div>
 <div id="theres-a-package-for-that" class="section level3">
 <h3>There’s a package for that</h3>
-<p>And that’s it! Hopefully, this has given you a quick appreciation of what R can help you to achieve fairly quickly.</p>
+<p>And that’s it! Hopefully, this has given you a quick appreciation of the variety of techniques that you can employ in R.</p>
+<p>
+ 
+</p>
 <hr />
 </div>
 

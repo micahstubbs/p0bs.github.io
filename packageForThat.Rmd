@@ -9,9 +9,9 @@ output:
       after_body: footer.html
 ---
 
-Here's a page that I've prepared for an R training course that I ran at my company. The idea was to show that just as Apple has an app for that, so too does R (although they're called packages).
+<p>&nbsp;</p>
 
----
+Here's a page that I prepared for an R training course that I ran at my company. The idea was to show that, just like Apple, R has an app for that. OK, a package for that.
 
 <p>&nbsp;</p>
 
@@ -85,7 +85,7 @@ resultsData$leaveVotes <- as.numeric(resultsData$leaveVotes)
 
 ### Map and boundary data
 
-To understand this data even more, it would help to map it. And the amount of  boundary files available for UK maps is extraordinary. R helps us to use these maps, so that we can map each local authority (the areas over which the referendum votes were amalgamated). (To speed-up the code, I've also done as before and run the code in advance, saving the RDS, only to load it for this page.)
+To understand this data even more, it would help to map it. And the amount of  boundary files available for UK maps is extraordinary. R helps us to use these maps, so that we can map each local authority (the areas over which the referendum votes were amalgamated). (As before, I've run the dimmed-out code beforehand and saved the RDS, for use on this page.)
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
@@ -199,7 +199,7 @@ datatable(mapDataFinal,
 
 ### Plotting the votes
 
-We're then ready to plot the data. When we do so, some regional trends are immediately apparent.
+We're now ready to plot the data. When we do so, some regional trends are immediately apparent.
 
 ```{r, eval=TRUE, echo=TRUE, results='markup', warning=FALSE, message=FALSE}
 
@@ -228,6 +228,8 @@ map
 
 ### There's a package for that
 
-And that's it! Hopefully, this has given you a quick appreciation of what R can help you to achieve fairly quickly.
+And that's it! Hopefully, this has given you a quick appreciation of the variety of techniques that you can employ in R.
+
+<p>&nbsp;</p>
 
 ---
