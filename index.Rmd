@@ -27,7 +27,7 @@ At work, I use data science to improve how asset owners select asset managers. I
 
 <p class="half-line">&nbsp;</p>
   
-  * Building a [dynamic dashboard of Brexit referendum data](BrexitDashboard.html)
+  * Building a <a href="http://www.p0bs.com/BrexitDashboard.html" target="_blank">dynamic dashboard of Brexit referendum data</a>
 
   * [Mapping Brexit referendum data](packageForThat.html)  for an R training course that I delivered
 

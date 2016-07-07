@@ -228,7 +228,7 @@ map
 
 ### There's a package for that
 
-And that's it! Hopefully, this page has given you a quick appreciation of the variety of techniques that you can fruitfully employ in R.
+And that's it! Hopefully, this page has given you a quick appreciation of the variety of techniques that you can fruitfully employ in R. And, if you want to see how this can easily be turned into a dynamic dashboard, <a href="http://www.p0bs.com/BrexitDashboard.html" target="_blank">click here</a>.
 
 <p>&nbsp;</p>
 
