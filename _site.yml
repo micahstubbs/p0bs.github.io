@@ -24,6 +24,10 @@ navbar:
           href: 2016PremPredict3.html
         - text: "We've all been foxed by Leicester"
           href: 2016PremPredict2.html
+    - text: "OTHER"
+      menu:
+        - text: "Brexit referendum dashboard"
+          href: BrexitDashboard.html
   right:
     - icon: fa-twitter fa-lg
       href: https://twitter.com/InvestmentRP

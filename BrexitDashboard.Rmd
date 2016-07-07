@@ -1,0 +1,139 @@
+---
+title: "Breaking down the Brexit vote -- Which Local Authorities wanted out? And by how much?"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    storyboard: false
+    theme: sandstone
+    highlight: pygments
+    css: styles.css
+    include:
+      after_body: footer.html
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(htmltools)
+library(crosstalk)
+library(rmarkdown)        # Generates this html report
+library(knitr)            # Underpins this html report
+library(xml2)             # Scrapes web data
+library(rvest)            # Scrapes web data
+library(tidyr)            # Restructures data
+library(dplyr)            # Provides database functionality
+library(htmlwidgets)      # Enables responsive exhibits
+library(DT)               # Enables responsive data tables
+library(leaflet)          # Generates interactive map plots
+library(magrittr)         # Enables chaining of commands
+library(maptools)
+library(ggplot2)
+library(sp)
+
+webData <- readRDS("webData.rds")
+lWebData <- length(webData)
+
+areaName <- webData[seq(from = 1, to = lWebData-2, by = 3)]
+remainVotes <- webData[seq(from = 2, to = lWebData-1, by = 3)]
+leaveVotes <- webData[seq(from = 3, to = lWebData, by = 3)]
+
+remainVotes <- gsub(",([0-9])", "\\1", remainVotes)
+leaveVotes <- gsub(",([0-9])", "\\1", leaveVotes)
+
+resultsData <- as.data.frame(t(rbind(areaName, remainVotes, leaveVotes)), stringsAsFactors = F)
+resultsData$remainVotes <- as.numeric(resultsData$remainVotes)
+resultsData$leaveVotes <- as.numeric(resultsData$leaveVotes)
+
+localAuthorityCleanDF <- readRDS("localAuthorityCleanDF.rds")
+
+# Based upon these mislabelled regions, alter the names accordingly
+resultsData[24,1] <- "Kingston upon Hull, City of"
+resultsData[109,1] <- "Herefordshire, County of"
+resultsData[134,1] <- "St. Helens"
+resultsData[139,1] <- "County Durham"
+resultsData[270,1] <- "Newcastle upon Tyne"
+resultsData[339,1] <- "Dundee City"
+resultsData[345,1] <- "Aberdeen City"
+resultsData[347,1] <- "Kingston upon Thames"
+resultsData[348,1] <- "Bristol, City of"
+resultsData[360,1] <- "Glasgow City"
+resultsData[366,1] <- "Richmond upon Thames"
+resultsData[374,1] <- "City of Edinburgh"
+
+# Drop NI and Gibraltar
+mapDataSummary <- resultsData[c(-308, -382)]
+
+mapDataLng <- localAuthorityCleanDF %>% 
+  group_by(id) %>% 
+  summarise(avLng = round(median(long),4))
+  
+mapDataLat <- localAuthorityCleanDF %>% 
+  group_by(id) %>% 
+  summarise(avLat = round(median(lat),4))
+
+mapDataLngLat <- mapDataLat %>% 
+  left_join(mapDataLng, by = "id") %>% 
+  rename(areaName = id)
+
+mapDataFinal <- mapDataSummary %>% 
+  left_join(mapDataLngLat, by = "areaName") %>% 
+  mutate(leaveShare = round(leaveVotes/(leaveVotes + remainVotes),2)) %>% 
+  mutate(size = leaveVotes + remainVotes) %>% 
+  select(areaName, remainVotes, leaveVotes, leaveShare, size, avLat, avLng)
+
+mapDataFinal <- mapDataFinal[complete.cases(mapDataFinal),]
+mapDataFinalCT <- SharedData$new(mapDataFinal)
+```
+
+Column
+-----------------------------------------------------------------------
+
+### 
+
+```{r fig.height=1.2, fig.width=9}
+
+# Create a filter input
+filter_slider("pLeave", "Move this slider to alter the proportion of votes for Brexit by Local Authority", mapDataFinalCT, column = ~leaveShare, step = 0.01)
+```
+
+###
+
+```{r fig.height=5.8, fig.width=9}
+
+datatable(mapDataFinalCT,
+          rownames = FALSE,
+          options = list(dom = 'tip',
+                         order = list(2, 'desc'),
+                         columnDefs = list(list(
+            className = 'dt-left', targets = 0)),
+                         pageLength = 10))
+```
+
+Column
+-----------------------------------------------------------------------
+
+### 
+
+```{r fig.height=7, fig.width=6}
+
+pal <- colorNumeric(palette = "YlOrRd", domain = mapDataFinalCT$leaveShare)
+
+map <- leaflet(mapDataFinalCT) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  setView(lng = -3, lat = 53.5, zoom = 6) %>%
+  addCircles(lng = ~avLng, 
+             lat = ~avLat, 
+             color = ~pal(leaveShare), 
+             radius = ~20*sqrt(size), 
+             stroke = FALSE, 
+             fillOpacity = 0.9,
+             popup = ~areaName) %>% 
+  addLegend("topright", 
+            pal = pal, 
+            values = ~leaveShare, 
+            title = "% of Leave voters", 
+            labFormat = labelFormat(), 
+            opacity = 1)
+
+map
+```
